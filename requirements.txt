@@ -1,6 +1,6 @@
 Jinja2==2.6
 Werkzeug==0.8.3
-notion-py
+notion
 pandas
 plotly==4.8.2
 chart_studio
