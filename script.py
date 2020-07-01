@@ -1,20 +1,29 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[42]:
 
 
 from notion.client import NotionClient
+import datetime
 client=NotionClient(token_v2="5eb906f0541e05cd563299dba7162e1b1aa9906d24daec7249a115201e8d103c6cf312e5d3db1cb513020a658a3015d43a26280183c9bae2dd3055dbc45d2ed19ac2fc081e172921326170973439")
 
 
-# In[2]:
+# In[43]:
 
 
 page = client.get_block("https://www.notion.so/greyamp/ae5eda0288324145834e92218849bcd8?v=83bd4754f4fb483994059ccfd41773a8")
 
+def date_format(date):
+    if(date != None):
+        if type(date) is datetime.datetime:
+            return date.date()
+        else:
+            return date.start
+    return None
 
-# In[3]:
+
+# In[44]:
 
 
 planningBoard = []
@@ -23,19 +32,6 @@ for row in page.collection.get_rows():
     assignees = []
     for user in row.assignee:
         assignees.append(user.full_name)
-        
-    if(row.due_date != None):
-        dueDate = row.due_date.start
-    else:
-        dueDate = None
-    if(row.end_date != None):
-        endDate = row.end_date.start
-    else:
-        endDate = None
-    if(row.start_date != None):
-        startDate = row.start_date.start
-    else:
-        startDate = None
         
     supportingMembers = []
     for user in row.supporting_members:
@@ -48,24 +44,23 @@ for row in page.collection.get_rows():
             "Created Date":row.created_date,
             "Current Sprint":row.current_sprint,
             "DoD":row.dod,
-            "Due Date":dueDate,
-            "End Date":endDate,
-            "Last Edited Date":row.last_edited_date,
+            "Due Date":date_format(row.due_date),
+            "End Date":date_format(row.end_date),
+            "Last Edited Date":date_format(row.last_edited_date),
             "Lever":row.lever,
             "Priority":row.priority,
             "Sprint Planned For":row.sprint_planned_for,
-            "Start Date":startDate,
+            "Start Date":date_format(row.start_date),
             "Status":row.status,
             "Supporting Members":supportingMembers,
             "Track":row.track
            } 
     planningBoard.append(card)
     
-    
 print(planningBoard)
 
 
-# In[4]:
+# In[45]:
 
 
 import pandas as pd
@@ -82,7 +77,7 @@ df = pd.DataFrame(list(cardStatusData.items()),columns = ['Status','Count'])
 print(df)
 
 
-# In[5]:
+# In[46]:
 
 
 import chart_studio
@@ -97,6 +92,12 @@ fig.show()
 
 import chart_studio.plotly as py
 py.plot(fig, filename = 'card_statuses', auto_open=True)
+
+
+# In[21]:
+
+
+
 
 
 # In[ ]:
