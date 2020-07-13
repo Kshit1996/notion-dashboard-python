@@ -178,7 +178,7 @@ card_incomplete_graph(waitingForClient,'waitingForClient-card-completion', 'Time
 card_incomplete_graph(inReview,'inReview-card-completion', 'Time-Duration: In Review Cards')
 
 
-# In[46]:
+# In[48]:
 
 
 import git
@@ -212,10 +212,6 @@ repo.index.commit(str(datetime.date.today()))
 
 repo.git.push()
 shutil.rmtree(repo_dir)
-
-board=[]
-with open(new_file_path, 'r') as filehandle:
-    board = json.load(filehandle)
 
 
 # In[ ]:
