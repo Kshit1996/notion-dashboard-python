@@ -4,3 +4,4 @@ notion
 pandas
 plotly==4.8.2
 chart_studio
+gitpython
