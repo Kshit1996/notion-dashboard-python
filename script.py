@@ -204,7 +204,7 @@ git_ssh_identity_file = os.getcwd() + ('notion-dashboard-python/id_rsa_greyamp')
 git_ssh_cmd = 'ssh -i %s' % git_ssh_identity_file
 
 with Git().custom_environment(GIT_SSH_COMMAND=git_ssh_cmd):
-     Repo.clone_from(repo_url, repo_dir)
+     git.Repo.clone_from(repo_url, repo_dir)
 
 
 # repo.git.pull()
