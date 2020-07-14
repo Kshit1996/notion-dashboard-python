@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[2]:
+# In[138]:
 
 
 from notion.client import NotionClient
@@ -10,6 +10,12 @@ import chart_studio
 import chart_studio.plotly as py
 import pandas as pd
 import plotly.express as px
+import git
+import shutil
+import os
+import io
+import json
+import dateutil.parser
 
 username = 'kshit96'
 api_key = 'koxCWL68bdDw2hy6r1mH'
@@ -19,7 +25,16 @@ client=NotionClient(token_v2="5eb906f0541e05cd563299dba7162e1b1aa9906d24daec7249
 page = client.get_block("https://www.notion.so/greyamp/ae5eda0288324145834e92218849bcd8?v=83bd4754f4fb483994059ccfd41773a8")
 
 
-# In[3]:
+# In[139]:
+
+
+repo_path = os.getcwd() + '/notion-database'
+work_file_name = 'CardHistory.json'
+work_file = os.path.join(repo_path, work_file_name)
+repo = git.Repo.init(repo_path)
+
+
+# In[140]:
 
 
 def date_format(date):
@@ -97,9 +112,14 @@ def card_incomplete_graph(cards,filename, title):
     df = convert_to_dataframe_for_pi_chart(cardCompletionData)
 
     create_pie_chart(df,filename, 'percent+label', title)
+    
+    
+def default(o):
+    if type(o) is datetime.date or type(o) is datetime.datetime:
+        return o.isoformat()
 
 
-# In[4]:
+# In[141]:
 
 
 planningBoard = []
@@ -134,7 +154,7 @@ for row in page.collection.get_rows():
     planningBoard.append(card)
 
 
-# In[5]:
+# In[142]:
 
 
 cardStatusData= {}
@@ -148,7 +168,7 @@ df = convert_to_dataframe_for_pi_chart(cardStatusData)
 create_pie_chart(df,'card-statuses', 'value+label', 'Overall Card Statuses')
 
 
-# In[6]:
+# In[146]:
 
 
 completed=[]
@@ -177,26 +197,12 @@ card_incomplete_graph(onHold,'onHold-card-completion','Time-Duration: On Hold Ca
 card_incomplete_graph(waitingForClient,'waitingForClient-card-completion', 'Time-Duration: Waiting For Client Cards')
 card_incomplete_graph(inReview,'inReview-card-completion', 'Time-Duration: In Review Cards')
 
+print(len(planningBoard))
 
-# In[78]:
+
+# In[148]:
 
 
-import git
-import shutil
-import os
-import io
-import json
-from git import Git
-
-def default(o):
-    if type(o) is datetime.date or type(o) is datetime.datetime:
-        return o.isoformat()
-
-repo_path = os.getcwd() + '/notion-database'
-work_file_name = 'CardHistory.json'
-work_file = os.path.join(repo_path, work_file_name)
-repo = git.Repo.init(repo_path)
-   
 json_object = json.dumps(planningBoard, default=default)  
 
 with io.open(work_file, 'w', encoding='utf-8') as f:
@@ -204,6 +210,35 @@ with io.open(work_file, 'w', encoding='utf-8') as f:
     f.close()
 repo.index.add(work_file)
 repo.index.commit(str(datetime.datetime.now()))
+
+
+# In[149]:
+
+
+last_twenty_commits = list(repo.iter_commits('master', max_count=50))
+
+data = None
+for commit in last_twenty_commits:
+    repo.git.checkout(commit) 
+    print(repo.tree(commit))
+    with io.open(work_file, 'r', encoding='utf-8') as f:
+        data = json.load(f)
+        f.close()
+    print(len(data))
+
+repo.git.checkout('master')
+
+
+# In[ ]:
+
+
+
+
+
+# In[ ]:
+
+
+
 
 
 # In[ ]:
