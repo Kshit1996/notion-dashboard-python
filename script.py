@@ -178,7 +178,7 @@ card_incomplete_graph(waitingForClient,'waitingForClient-card-completion', 'Time
 card_incomplete_graph(inReview,'inReview-card-completion', 'Time-Duration: In Review Cards')
 
 
-# In[77]:
+# In[78]:
 
 
 import git
@@ -195,7 +195,7 @@ def default(o):
 repo_path = os.getcwd() + '/notion-database'
 work_file_name = 'CardHistory.json'
 work_file = os.path.join(repo_path, work_file_name)
-repo = Repo.init(repo_path)
+repo = git.Repo.init(repo_path)
    
 json_object = json.dumps(planningBoard, default=default)  
 
