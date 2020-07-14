@@ -178,7 +178,7 @@ card_incomplete_graph(waitingForClient,'waitingForClient-card-completion', 'Time
 card_incomplete_graph(inReview,'inReview-card-completion', 'Time-Duration: In Review Cards')
 
 
-# In[48]:
+# In[60]:
 
 
 import git
@@ -186,6 +186,7 @@ import shutil
 import os
 import io
 import json
+from git import Git
 
 def default(o):
     if type(o) is datetime.date or type(o) is datetime.datetime:
@@ -197,7 +198,16 @@ work_file_name = 'CardHistory.json'
 work_file = os.path.join(repo_dir, work_file_name)
 if os.path.isdir(repo_dir):
     shutil.rmtree(repo_dir)
-repo = git.Repo.clone_from(repo_url, repo_dir)
+# repo = git.Repo.clone_from(repo_url, repo_dir)
+
+
+
+git_ssh_identity_file = os.path.join(repo.working_tree_dir,'id_rsa_greyamp')
+git_ssh_cmd = 'ssh -i %s' % git_ssh_identity_file
+repo = None
+with Git().custom_environment(GIT_SSH_COMMAND=git_ssh_cmd):
+     repo = git.Repo.clone_from(repo_url, repo_dir)
+
 repo.git.pull()
 new_file_path = os.path.join(repo.working_tree_dir, work_file_name)
    
@@ -208,7 +218,7 @@ with io.open(new_file_path, 'w', encoding='utf-8') as f:
     f.write(json_object)
     f.close()
 repo.index.add(new_file_path)
-repo.index.commit(str(datetime.date.today()))
+repo.index.commit(str(datetime.datetime.now()))
 
 repo.git.push()
 shutil.rmtree(repo_dir)
