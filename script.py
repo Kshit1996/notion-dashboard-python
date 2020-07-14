@@ -192,19 +192,14 @@ def default(o):
     if type(o) is datetime.date or type(o) is datetime.datetime:
         return o.isoformat()
     
-repo_url = 'git@github.com:Kshit1996/notion-database.git'
+repo_url = 'https://github.com/Kshit1996/notion-database.git'
 repo_dir = 'test'
 work_file_name = 'CardHistory.json'
 work_file = os.path.join(repo_dir, work_file_name)
 if os.path.isdir(repo_dir):
     shutil.rmtree(repo_dir)
-# repo = git.Repo.clone_from(repo_url, repo_dir)
+repo = git.Repo.clone_from(repo_url, repo_dir)
 
-git_ssh_identity_file = os.getcwd() + ('notion-dashboard-python/id_rsa_greyamp')
-git_ssh_cmd = 'ssh -i %s' % git_ssh_identity_file
-
-with Git().custom_environment(GIT_SSH_COMMAND=git_ssh_cmd):
-     git.Repo.clone_from(repo_url, repo_dir)
 
 
 # repo.git.pull()
