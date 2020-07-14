@@ -178,7 +178,7 @@ card_incomplete_graph(waitingForClient,'waitingForClient-card-completion', 'Time
 card_incomplete_graph(inReview,'inReview-card-completion', 'Time-Duration: In Review Cards')
 
 
-# In[64]:
+# In[ ]:
 
 
 import git
@@ -198,15 +198,7 @@ work_file_name = 'CardHistory.json'
 work_file = os.path.join(repo_dir, work_file_name)
 if os.path.isdir(repo_dir):
     shutil.rmtree(repo_dir)
-# repo = git.Repo.clone_from(repo_url, repo_dir)
-
-print(os.getcwd())
-
-git_ssh_identity_file = os.path.join(os.getcwd(),'/notion-dashboard-python/id_rsa_greyamp')
-git_ssh_cmd = 'ssh -i %s' % git_ssh_identity_file
-repo = None
-with Git().custom_environment(GIT_SSH_COMMAND=git_ssh_cmd):
-     repo = git.Repo.clone_from(repo_url, repo_dir)
+repo = git.Repo.clone_from(repo_url, repo_dir)
 
 repo.git.pull()
 new_file_path = os.path.join(repo.working_tree_dir, work_file_name)
