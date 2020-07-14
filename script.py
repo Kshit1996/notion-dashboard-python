@@ -178,7 +178,7 @@ card_incomplete_graph(waitingForClient,'waitingForClient-card-completion', 'Time
 card_incomplete_graph(inReview,'inReview-card-completion', 'Time-Duration: In Review Cards')
 
 
-# In[ ]:
+# In[68]:
 
 
 import git
@@ -191,29 +191,35 @@ from git import Git
 def default(o):
     if type(o) is datetime.date or type(o) is datetime.datetime:
         return o.isoformat()
-
+    
 repo_url = 'git@github.com:Kshit1996/notion-database.git'
 repo_dir = 'test'
 work_file_name = 'CardHistory.json'
 work_file = os.path.join(repo_dir, work_file_name)
 if os.path.isdir(repo_dir):
     shutil.rmtree(repo_dir)
-repo = git.Repo.clone_from(repo_url, repo_dir)
+# repo = git.Repo.clone_from(repo_url, repo_dir)
 
-repo.git.pull()
-new_file_path = os.path.join(repo.working_tree_dir, work_file_name)
+git_ssh_identity_file = os.getcwd() + ('notion-dashboard-python/id_rsa_greyamp')
+git_ssh_cmd = 'ssh -i %s' % git_ssh_identity_file
+
+with Git().custom_environment(GIT_SSH_COMMAND=git_ssh_cmd):
+     Repo.clone_from(repo_url, repo_dir)
+
+
+# repo.git.pull()
+# new_file_path = os.path.join(repo.working_tree_dir, work_file_name)
    
-json_object = json.dumps(planningBoard, default=default)  
-print(json_object)
+# json_object = json.dumps(planningBoard, default=default)  
 
-with io.open(new_file_path, 'w', encoding='utf-8') as f:
-    f.write(json_object)
-    f.close()
-repo.index.add(new_file_path)
-repo.index.commit(str(datetime.datetime.now()))
+# with io.open(new_file_path, 'w', encoding='utf-8') as f:
+#     f.write(json_object)
+#     f.close()
+# repo.index.add(new_file_path)
+# repo.index.commit(str(datetime.datetime.now()))
 
-repo.git.push()
-shutil.rmtree(repo_dir)
+# repo.git.push()
+# shutil.rmtree(repo_dir)
 
 
 # In[ ]:
